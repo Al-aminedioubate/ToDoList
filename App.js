@@ -19,6 +19,18 @@ export default function App() {
     { id: 8, title: "Aller dormir", isCompleted: false },
   ]);
 
+  //la fonction qui permet de filtrage des taches
+  function getFilteredList() {
+    switch (selectedTabName) {
+      case "all":
+        return todoList;
+      case "inProgress":
+        return todoList.filter((todo) => !todo.isCompleted);
+      case "done":
+        return todoList.filter((todo) => todo.isCompleted);
+    }
+  }
+
   //La fonction qui permet de faire la mise a jour d'une tache.
   function updateTodo(todo) {
     const updatedTodo = {
@@ -37,9 +49,18 @@ export default function App() {
     console.log(todo);
   }
 
-  //La fonction permettant de retourner le tableau.
+  /*//La fonction permettant de retourner le tableau.
   function renderTodoList() {
     return todoList.map((todo) => (
+      <View style={s.cardItem} key={todo.id}>
+        <CardToDo onPress={updateTodo} todo={todo} />
+      </View>
+    ));
+  }*/
+
+  //La fonction d'afficher le resultat filtrer
+  function renderTodoList() {
+    return getFilteredList().map((todo) => (
       <View style={s.cardItem} key={todo.id}>
         <CardToDo onPress={updateTodo} todo={todo} />
       </View>
@@ -60,6 +81,7 @@ export default function App() {
       </SafeAreaProvider>
       <View style={s.footer}>
         <TabBottomMenu
+          todoList={todoList}
           onPress={setSelectedTabName}
           selectedTabName={selectedTabName}
         />
