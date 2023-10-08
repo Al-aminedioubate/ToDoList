@@ -1,5 +1,5 @@
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, Text, View } from "react-native";
+import { Alert, ScrollView, Text, View } from "react-native";
 import { s } from "./App.style";
 import { Header } from "./components/header";
 import { CardToDo } from "./components/CardTodo/cardTodo";
@@ -58,11 +58,28 @@ export default function App() {
     ));
   }*/
 
+  //function qui permet d'effacer une tache
+  function deleteTodo(todoToDelete) {
+    Alert.alert("Suppression", "Supprimer cette tache ?", [
+      {
+        text: "Supprimer",
+        style: "destructive",
+        onPress: () => {
+          setTodoList(todoList.filter((todo) => todo.id !== todoToDelete.id));
+        },
+      },
+      {
+        text: "Annuler",
+        style: "cancel",
+      },
+    ]);
+  }
+
   //La fonction d'afficher le resultat filtrer
   function renderTodoList() {
     return getFilteredList().map((todo) => (
       <View style={s.cardItem} key={todo.id}>
-        <CardToDo onPress={updateTodo} todo={todo} />
+        <CardToDo onLongPress={deleteTodo} onPress={updateTodo} todo={todo} />
       </View>
     ));
   }
