@@ -6,6 +6,7 @@ import { CardToDo } from "./components/CardTodo/cardTodo";
 import { useState } from "react";
 import { TabBottomMenu } from "./components/TabBottomMenu/tabBottomMenu";
 import { ButtonAdd } from "./components/ButtonAdd/ButtonAdd";
+import Dialog from "react-native-dialog";
 
 export default function App() {
   const [selectedTabName, setSelectedTabName] = useState("all");
@@ -88,6 +89,13 @@ export default function App() {
   //la fonction permettant de faire les ajouts des taches.
   function addTodo() {}
 
+  function showAddDialog() {
+    setIsAddDialogVisible(true);
+  }
+
+  //le state permettant d'afficher le dialog
+  const [isAddDialogVisible, setIsAddDialogVisible] = useState(false);
+
   return (
     <>
       <SafeAreaProvider>
@@ -96,7 +104,7 @@ export default function App() {
             <Header />
           </View>
           <View style={s.body}></View>
-          <ButtonAdd onPress />
+          <ButtonAdd onPress={showAddDialog} />
         </SafeAreaView>
       </SafeAreaProvider>
       <View style={s.footer}>
@@ -105,6 +113,17 @@ export default function App() {
           onPress={setSelectedTabName}
           selectedTabName={selectedTabName}
         />
+        <Dialog.Container
+          visible={isAddDialogVisible}
+          onBackdropPress={() => setIsAddDialogVisible(false)}
+        >
+          <Dialog.Title>Creer une tache</Dialog.Title>
+          <Dialog.Description>
+            Choisir un nom pour la nouvelle tache
+          </Dialog.Description>
+          <Dialog.Input onChangeText={() => ""} />
+          <Dialog.Button label="Creer" onPress={() => ""} />
+        </Dialog.Container>
       </View>
     </>
   );
