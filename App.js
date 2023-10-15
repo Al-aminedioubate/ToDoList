@@ -5,11 +5,12 @@ import { Header } from "./components/header";
 import { CardToDo } from "./components/CardTodo/cardTodo";
 import { useState } from "react";
 import { TabBottomMenu } from "./components/TabBottomMenu/tabBottomMenu";
+import { ButtonAdd } from "./components/ButtonAdd/ButtonAdd";
 
 export default function App() {
   const [selectedTabName, setSelectedTabName] = useState("all");
   const [todoList, setTodoList] = useState([
-    { id: 1, title: "Aller au travail la matin", isCompleted: true },
+    { id: 1, title: "Aller a la mosqueé", isCompleted: true },
     { id: 2, title: "Programmer mon app", isCompleted: false },
     { id: 3, title: "Aller a la salle de sport", isCompleted: true },
     { id: 4, title: "Aller dormir", isCompleted: true },
@@ -46,7 +47,7 @@ export default function App() {
     updatedTodoList[indexToUpdate] = updatedTodo;
     setTodoList(updatedTodoList);
 
-    console.log(todo);
+    //console.log(todo);
   }
 
   /*//La fonction permettant de retourner le tableau.
@@ -84,6 +85,9 @@ export default function App() {
     ));
   }
 
+  //la fonction permettant de faire les ajouts des taches.
+  function addTodo() {}
+
   return (
     <>
       <SafeAreaProvider>
@@ -91,9 +95,8 @@ export default function App() {
           <View style={s.header}>
             <Header />
           </View>
-          <View style={s.body}>
-            <ScrollView>{renderTodoList()}</ScrollView>
-          </View>
+          <View style={s.body}></View>
+          <ButtonAdd onPress />
         </SafeAreaView>
       </SafeAreaProvider>
       <View style={s.footer}>
