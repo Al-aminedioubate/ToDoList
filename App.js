@@ -45,7 +45,7 @@ export default function App() {
     updatedTodoList[indexToUpdate] = updatedTodo;
     setTodoList(updatedTodoList);
 
-    console.log(todo);
+    //console.log(todo);
   }
 
   //La fonction permettant de retourner le tableau.
