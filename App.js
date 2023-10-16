@@ -7,6 +7,7 @@ import { useState } from "react";
 import { TabBottomMenu } from "./components/TabBottomMenu/tabBottomMenu";
 import { ButtonAdd } from "./components/ButtonAdd/ButtonAdd";
 import Dialog from "react-native-dialog";
+import uuid from "react-native-uuid";
 
 export default function App() {
   const [selectedTabName, setSelectedTabName] = useState("all");
@@ -15,10 +16,6 @@ export default function App() {
     { id: 2, title: "Programmer mon app", isCompleted: false },
     { id: 3, title: "Aller a la salle de sport", isCompleted: true },
     { id: 4, title: "Aller dormir", isCompleted: true },
-    { id: 5, title: "Aller au travail la matin", isCompleted: false },
-    { id: 6, title: "Programmer mon app", isCompleted: true },
-    { id: 7, title: "Aller a la salle de sport", isCompleted: true },
-    { id: 8, title: "Aller dormir", isCompleted: false },
   ]);
 
   //la fonction qui permet de filtrage des taches
@@ -48,17 +45,17 @@ export default function App() {
     updatedTodoList[indexToUpdate] = updatedTodo;
     setTodoList(updatedTodoList);
 
-    //console.log(todo);
+    console.log(todo);
   }
 
-  /*//La fonction permettant de retourner le tableau.
+  //La fonction permettant de retourner le tableau.
   function renderTodoList() {
     return todoList.map((todo) => (
       <View style={s.cardItem} key={todo.id}>
         <CardToDo onPress={updateTodo} todo={todo} />
       </View>
     ));
-  }*/
+  }
 
   //function qui permet d'effacer une tache
   function deleteTodo(todoToDelete) {
@@ -77,7 +74,7 @@ export default function App() {
     ]);
   }
 
-  //La fonction d'afficher le resultat filtrer
+  //La fonction qui permet d'afficher le resultat du tableau filtrer
   function renderTodoList() {
     return getFilteredList().map((todo) => (
       <View style={s.cardItem} key={todo.id}>
@@ -86,15 +83,28 @@ export default function App() {
     ));
   }
 
-  //la fonction permettant de faire les ajouts des taches.
-  function addTodo() {}
-
+  //la fonction permettant d'afficher le dialog
   function showAddDialog() {
     setIsAddDialogVisible(true);
   }
 
+  //la fonction permettante de faire l'ajout des taches en creant une nouvelle taches
+  function addTodo() {
+    const newTodo = {
+      id: uuid.v4(),
+      title: inputValue,
+      isCompleted: false,
+    };
+
+    setTodoList([...todoList, newTodo]); //ajout notre todo aux existant.
+    setIsAddDialogVisible(false);
+  }
+
   //le state permettant d'afficher le dialog
   const [isAddDialogVisible, setIsAddDialogVisible] = useState(false);
+
+  //le state contenant le contenu du popUp pour utilisation lors de la creation
+  const [inputValue, setInputValue] = useState("");
 
   return (
     <>
@@ -103,7 +113,9 @@ export default function App() {
           <View style={s.header}>
             <Header />
           </View>
-          <View style={s.body}></View>
+          <View style={s.body}>
+            <ScrollView>{renderTodoList()}</ScrollView>
+          </View>
           <ButtonAdd onPress={showAddDialog} />
         </SafeAreaView>
       </SafeAreaProvider>
@@ -121,8 +133,12 @@ export default function App() {
           <Dialog.Description>
             Choisir un nom pour la nouvelle tache
           </Dialog.Description>
-          <Dialog.Input onChangeText={() => ""} />
-          <Dialog.Button label="Creer" onPress={() => ""} />
+          <Dialog.Input onChangeText={setInputValue} />
+          <Dialog.Button
+            disabled={inputValue.trim().length === 0}
+            label="Creer"
+            onPress={addTodo}
+          />
         </Dialog.Container>
       </View>
     </>
