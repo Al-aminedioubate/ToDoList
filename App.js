@@ -3,20 +3,74 @@ import { Alert, ScrollView, Text, View } from "react-native";
 import { s } from "./App.style";
 import { Header } from "./components/header";
 import { CardToDo } from "./components/CardTodo/cardTodo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TabBottomMenu } from "./components/TabBottomMenu/tabBottomMenu";
 import { ButtonAdd } from "./components/ButtonAdd/ButtonAdd";
 import Dialog from "react-native-dialog";
 import uuid from "react-native-uuid";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+let isFirstRender = true;
+let isLoadUpdate = false;
 
 export default function App() {
   const [selectedTabName, setSelectedTabName] = useState("all");
+  //le state permettant d'afficher le dialog
+  const [isAddDialogVisible, setIsAddDialogVisible] = useState(false);
+  //le state contenant le contenu du popUp pour utilisation lors de la creation
+  const [inputValue, setInputValue] = useState("");
+  const [todoList, setTodoList] = useState([]);
+
+  //permettant d'excuter un code lors de demarage de l'application et juste une fois
+  useEffect(() => {
+    loadTodoList();
+  }, []);
+
+  //permet de verifier notre modificatio quand il ya changement.
+  useEffect(() => {
+    if (isLoadUpdate) {
+      isLoadUpdate = false;
+    } else {
+      if (!isFirstRender) {
+        saveTodoList();
+      } else {
+        isFirstRender = false;
+      }
+    }
+  }, [todoList]);
+
+  //Fonction permettant de sauvegarder
+  async function saveTodoList() {
+    console.log("save");
+    try {
+      await AsyncStorage.setItem("@todoList", JSON.stringify(todoList));
+    } catch (err) {
+      alert("Erreur " + err);
+    }
+  }
+
+  //la fonction pour loader les taches
+  async function loadTodoList() {
+    console.log("load");
+    try {
+      const stringifiedTodoList = await AsyncStorage.getItem("@todoList");
+      if (stringifiedTodoList !== null) {
+        const parsedTodoList = JSON.parse(stringifiedTodoList);
+        isLoadUpdate = true;
+        setTodoList(parsedTodoList);
+      }
+    } catch (err) {
+      alert("Erreur " + err);
+    }
+  }
+
+  /*
   const [todoList, setTodoList] = useState([
     { id: 1, title: "Aller a la mosqueé", isCompleted: true },
     { id: 2, title: "Programmer mon app", isCompleted: false },
     { id: 3, title: "Aller a la salle de sport", isCompleted: true },
     { id: 4, title: "Aller dormir", isCompleted: true },
-  ]);
+  ]);*/
 
   //la fonction qui permet de filtrage des taches
   function getFilteredList() {
@@ -99,12 +153,6 @@ export default function App() {
     setTodoList([...todoList, newTodo]); //ajout notre todo aux existant.
     setIsAddDialogVisible(false);
   }
-
-  //le state permettant d'afficher le dialog
-  const [isAddDialogVisible, setIsAddDialogVisible] = useState(false);
-
-  //le state contenant le contenu du popUp pour utilisation lors de la creation
-  const [inputValue, setInputValue] = useState("");
 
   return (
     <>
